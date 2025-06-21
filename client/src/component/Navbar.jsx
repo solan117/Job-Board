@@ -15,8 +15,13 @@ const Navbar = () => {
             </div>
         </div>
         </>
-
-
+// <>
+//
+//         <div className="bg-red-500 text-white p-10 text-center">
+//             If you see red background and white text, Tailwind is working!
+//         </div>
+//     <div className='bg-pink-700'>Login</div>
+// </>
 
     )
 }
