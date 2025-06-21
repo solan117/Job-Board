@@ -1,27 +1,33 @@
 import React from 'react'
 import {assets} from '../assets/assets'
+import {useClerk, UserButton, useUser} from '@clerk/clerk-react'
 
 const Navbar = () => {
 
+    const {openSignIn, signOut} = useClerk()
+    const {user} = useUser()
+
     return (
         <>
-        <div className='shadow py-4'>
-            <div className='container px-4 2xl:px-20 mx-auto flex justify-between items-center'>
-                <img className='cursor-pointer' onClick={()=>navigate('/')} src={assets.logo} alt="" />
-                <div className='flex gap-4 max-sm:text-xs'>
-                    <button className='text-gray-600'>Recruiter Login</button>
-                    <button className='bg-blue-600 text-white px-6 sm:px-9 py-2 rounded-full'>Login</button>
+            <div className='shadow py-4'>
+                <div className='container px-4 2xl:px-20 mx-auto flex justify-between items-center'>
+                    <img className='cursor-pointer' onClick={() => navigate('/')} src={assets.logo} alt=""/>
+                    {
+                        user ?
+                            <div></div>
+                            :
+                            <div className='flex gap-4 max-sm:text-xs'>
+                                <button className='text-gray-600'>Recruiter Login</button>
+                                <button onClick={e => openSignIn()}
+                                        className='bg-blue-600 text-white px-6 sm:px-9 py-2 rounded-full'>Login
+                                </button>
+                            </div>
+                    }
+
                 </div>
             </div>
-        </div>
         </>
-// <>
-//
-//         <div className="bg-red-500 text-white p-10 text-center">
-//             If you see red background and white text, Tailwind is working!
-//         </div>
-//     <div className='bg-pink-700'>Login</div>
-// </>
+
 
     )
 }
