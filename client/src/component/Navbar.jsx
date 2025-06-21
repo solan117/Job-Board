@@ -1,6 +1,7 @@
 import React from 'react'
 import {assets} from '../assets/assets'
 import {useClerk, UserButton, useUser} from '@clerk/clerk-react'
+import {Link} from "react-router-dom";
 
 const Navbar = () => {
 
@@ -14,7 +15,12 @@ const Navbar = () => {
                     <img className='cursor-pointer' onClick={() => navigate('/')} src={assets.logo} alt=""/>
                     {
                         user ?
-                            <div></div>
+                            <div className='flex items-center gap-3'>
+                                <Link to={'/applications'}> Applied Jobs </Link>
+                                <p></p>
+                                <p>Hi, {user.firstName + " " + user.lastName} </p>
+                                <UserButton onClick={signOut} className='text-gray-600'>Sign Out</UserButton>
+                            </div>
                             :
                             <div className='flex gap-4 max-sm:text-xs'>
                                 <button className='text-gray-600'>Recruiter Login</button>
