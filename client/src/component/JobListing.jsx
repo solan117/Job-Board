@@ -3,8 +3,9 @@ import {AppContext} from "../context/AppContext";
 import {
     assets,
     JobCategories,
-    JobLocations,
+    JobLocations, jobsData,
 } from "../assets/assets";
+import JobCard from "./JobCard.jsx";
 
 const JobListing = () => {
     const {isSearched, searchFilter, setSearchFilter} = useContext(AppContext);
@@ -88,6 +89,19 @@ const JobListing = () => {
                     </ul>
                 </div>
             </div>
+
+            {/* Job listing */}
+            <section className="w-full lg:w-3/4 text-gray-800 max-lg:px-4">
+                <h3 className="font-medium text-3xl py-2" id="job-list">
+                    Latest jobs
+                </h3>
+                <p className="mb-8">Get your desired job at top companies</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {jobsData.map((job, index) => (
+                        <JobCard key={index} job={job}/>
+                    ))}
+                </div>
+            </section>
 
         </div>
     );
