@@ -3,6 +3,7 @@ import Navbar from "../component/Navbar.jsx";
 import Hero from "../component/Hero.jsx";
 import JobListing from "../component/JobListing.jsx";
 import AppDownload from "../component/AppDownload.jsx";
+import Footer from "../component/Footer.jsx";
 
 
 const Home = () => {
@@ -12,6 +13,7 @@ const Home = () => {
             <Hero/>
             <JobListing/>
             <AppDownload/>
+            <Footer/>
         </div>
     );
 };
