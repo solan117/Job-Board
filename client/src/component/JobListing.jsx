@@ -14,6 +14,24 @@ const JobListing = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [selectedCategories, setSelectedCategories] = useState([]);
+
+    const [selectedLocations, setSelectedLocations] = useState([]);
+
+    const [filteredJobs, setFilteredJobs] = useState(jobs);
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategories(
+            prev => prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
+        )
+    }
+
+    const handleLocationChange = (location) => {
+        setSelectedLocations(
+            prev => prev.includes(location) ? prev.filter(c => c !== location) : [...prev, location]
+        )
+    }
+
     return (
         <div className="container 2xl:px-20 mx-auto flex flex-col lg:flex-row max-lg:space-y-8 py-8">
             {/* Sidebar */}
@@ -27,7 +45,7 @@ const JobListing = () => {
                                 {searchFilter.title && (
                                     <span
                                         className="inline-flex items-center gap-2.5 bg-blue-50 border border-blue-200 px-4 py-1.5 rounded">
-                    {searchFilter.title}
+                                        {searchFilter.title}
                                         <img
                                             onClick={() =>
                                                 setSearchFilter((prev) => ({...prev, title: ""}))
@@ -36,12 +54,12 @@ const JobListing = () => {
                                             src={assets.cross_icon}
                                             alt="Remove title filter"
                                         />
-                  </span>
+                                    </span>
                                 )}
                                 {searchFilter.location && (
                                     <span
                                         className="ml-2 inline-flex items-center gap-2.5 bg-red-50 border border-red-200 px-4 py-1.5 rounded">
-                    {searchFilter.location}
+                                        {searchFilter.location}
                                         <img
                                             onClick={() =>
                                                 setSearchFilter((prev) => ({...prev, location: ""}))
@@ -50,7 +68,7 @@ const JobListing = () => {
                                             src={assets.cross_icon}
                                             alt="Remove location filter"
                                         />
-                  </span>
+                                    </span>
                                 )}
                             </div>
                         </div>
@@ -69,6 +87,8 @@ const JobListing = () => {
                                 <input
                                     className="scale-125"
                                     type="checkbox"
+                                    onChange={() => handleCategoryChange(category)}
+                                    checked={selectedCategories.includes(category)}
                                 />
                                 {category}
                             </li>
@@ -86,6 +106,8 @@ const JobListing = () => {
                                 <input
                                     className="scale-125"
                                     type="checkbox"
+                                    onChange={() => handleLocationChange(location)}
+                                    checked={selectedLocations.includes(location)}
                                 />
                                 {location}
                             </li>
