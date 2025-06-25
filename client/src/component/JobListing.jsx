@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {AppContext} from "../context/AppContext";
 import {
     assets,
@@ -19,6 +19,37 @@ const JobListing = () => {
     const [selectedLocations, setSelectedLocations] = useState([]);
 
     const [filteredJobs, setFilteredJobs] = useState(jobs);
+
+    useEffect(() => {
+        const matchingCategory = (job) =>
+            selectedCategories.length === 0 || selectedCategories.includes(job.category);
+
+        const matchingLocation = (job) =>
+            selectedLocations.length === 0 || selectedLocations.includes(job.location);
+
+        const matchingTitle = (job) =>
+            searchFilter.title === "" ||
+            job.title.toLowerCase().includes(searchFilter.title.toLowerCase());
+
+        const matchingSearchLocation = (job) =>
+            searchFilter.location === "" ||
+            job.location.toLowerCase().includes(searchFilter.location.toLowerCase());
+
+        const newFilteredJobs = jobs
+            .slice()
+            .reverse()
+            .filter(
+                (job) =>
+                    matchingCategory(job) &&
+                    matchingLocation(job) &&
+                    matchingTitle(job) &&
+                    matchingSearchLocation(job)
+            );
+
+        setFilteredJobs(newFilteredJobs);
+        setCurrentPage(1);
+    }, [jobs, selectedCategories, selectedLocations, searchFilter]);
+
 
     const handleCategoryChange = (category) => {
         setSelectedCategories(
@@ -123,20 +154,20 @@ const JobListing = () => {
                 </h3>
                 <p className="mb-8">Get your desired job at top companies</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {jobs.slice((currentPage - 1) * 6, currentPage * 6).map((job, index) => (
+                    {filteredJobs.slice((currentPage - 1) * 6, currentPage * 6).map((job, index) => (
                         <JobCard key={index} job={job}/>
                     ))}
                 </div>
 
                 {/* Pagination */}
 
-                {jobs.length > 0 && (
+                {filteredJobs.length > 0 && (
                     <div className='flex items-center justify-center space-x-2 mt-10'>
                         <a href="#job-list" className="text-white px-6 py-2 rounded">
                             <img onClick={() => setCurrentPage(Math.max(currentPage - 1), 1)}
                                  src={assets.left_arrow_icon} alt=""/>
                         </a>
-                        {Array.from({length: Math.ceil(jobs.length / 6)}).map((_, index) => (
+                        {Array.from({length: Math.ceil(filteredJobs.length / 6)}).map((_, index) => (
                             <a href="#job-list">
                                 <button onClick={() => setCurrentPage(index + 1)}
                                         className={`w-10 h-10 flex items-center justify-center border border-gray-300 rounded ${currentPage === index + 1 ? 'bg-blue-100 text-blue-500' : 'text-gray-500'}`}>{index + 1}</button>
@@ -144,7 +175,7 @@ const JobListing = () => {
                         ))}
                         <a href="#job-list" className="text-white px-6 py-2 rounded">
                             <img
-                                onClick={() => setCurrentPage(Math.min(currentPage + 1, Math.ceil(jobs.length / 6)))}
+                                onClick={() => setCurrentPage(Math.min(currentPage + 1, Math.ceil(filteredJobs.length / 6)))}
                                 src={assets.right_arrow_icon} alt=""/>
                         </a>
                     </div>
