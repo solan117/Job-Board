@@ -97,6 +97,7 @@ const Applyjob = () => {
                                 Apply Now
                             </button>
                         </div>
+
                         {/* Right Section More jobs */}
                         <div className="w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5">
                             <h2>
