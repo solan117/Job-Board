@@ -26,7 +26,7 @@ const JobCard = ({job}) => {
                         navigate(`/apply-job/${job._id}`);
                         scrollTo(0, 0);
                     }}
-                    className='bg-blue-600 text-white px-4 py-2 rounded'>
+                    className='bg-blue-600 cursor-pointer text-white px-4 py-2 rounded'>
                     Apply now
                 </button>
 
@@ -35,7 +35,7 @@ const JobCard = ({job}) => {
                         navigate(`/apply-job/${job._id}`);
                         scrollTo(0, 0);
                     }}
-                    className='text-gray-500 border border-gray-500 rounded px-4 py-2'>
+                    className='text-gray-500 border cursor-pointer border-gray-500 rounded px-4 py-2'>
                     Learn more
                 </button>
             </div>

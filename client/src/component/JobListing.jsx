@@ -105,7 +105,7 @@ const JobListing = () => {
                         </div>
                     )}
                 <button onClick={e => setShowFilter(prev => !prev)}
-                        className='px-6 py-1.5 rounded border border-gray-400 lg:hidden'>
+                        className='px-6 py-1.5 cursor-pointer rounded border border-gray-400 lg:hidden'>
                     {showFilter ? "Close" : "Filters"}
                 </button>
 
@@ -170,7 +170,7 @@ const JobListing = () => {
                         {Array.from({length: Math.ceil(filteredJobs.length / 6)}).map((_, index) => (
                             <a key={index} href="#job-list">
                                 <button onClick={() => setCurrentPage(index + 1)}
-                                        className={`w-10 h-10 flex items-center justify-center border border-gray-300 rounded ${currentPage === index + 1 ? 'bg-blue-100 text-blue-500' : 'text-gray-500'}`}>{index + 1}</button>
+                                        className={`w-10 h-10 flex items-center cursor-pointer justify-center border border-gray-300 rounded ${currentPage === index + 1 ? 'bg-blue-100 text-blue-500' : 'text-gray-500'}`}>{index + 1}</button>
                             </a>
                         ))}
                         <a href="#job-list" className="text-white px-6 py-2 rounded">
