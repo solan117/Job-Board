@@ -1,10 +1,19 @@
+import './config/instrument.js'
 import express from 'express'
 import cors from 'cors'
-import 'dotenv/config'
+import dotenv from 'dotenv';
+import * as Sentry from "@sentry/node";
 
+
+import connectDB from "./config/db.js";
+
+dotenv.config();
 
 // Initialize express
 const app = express()
+
+// Connect to database
+await connectDB()
 
 
 // Middlewares
@@ -18,6 +27,8 @@ app.get('/', (req, res) => res.send("API WORKING"))
 
 // Port
 const PORT = process.env.PORT || 5000
+Sentry.setupExpressErrorHandler(app);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
