@@ -31,7 +31,7 @@ build/
 *.log
 logs/
 
-
+commit-history.txt
 
 # Windows
 Thumbs.db
