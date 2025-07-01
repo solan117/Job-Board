@@ -32,6 +32,7 @@ build/
 logs/
 
 commit-history.txt
+commit-history1.txt
 
 # Windows
 Thumbs.db
