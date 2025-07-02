@@ -130,7 +130,6 @@ export const getCompanyJobApplicants = async (req, res) => {
 };
 
 // Get Company Posted Jobs
-// Get Company Posted Jobs
 export const getCompanyPostedJobs = async (req, res) => {
     try {
         const companyId = req.company._id;
@@ -155,7 +154,6 @@ export const getCompanyPostedJobs = async (req, res) => {
         return res.status(500).json({success: false, message: error.message});
     }
 };
-
 
 // Change job application status
 export const ChangeJobApplicationStatus = async (req, res) => {
