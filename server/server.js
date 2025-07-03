@@ -7,6 +7,7 @@ import connectDB from "./config/db.js";
 import {clerkWebhooks} from "./controllers/webhooks.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import connectCloudinary from "./config/cloudinary.js";
+import jobRoutes from "./routes/jobsRoutes.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 });
 app.post('/webhooks', clerkWebhooks)
 app.use('/api/company', companyRoutes)
+app.use('/api/jobs', jobRoutes)
 
 
 // Port
