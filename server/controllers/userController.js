@@ -3,41 +3,43 @@ import User from "../models/User.js"
 import Job from '../models/Jobs.js'
 import {v2 as cloudinary} from "cloudinary"
 
-export const getUserData = async (req, res) => {
-    const userId = req.params.id
 
+//  Get user Data
+export const getUserData = async (req, res) => {
+
+    const userId = req.auth.userId
     try {
+
         const user = await User.findById(userId)
         if (!user) {
-            return res.json({success: false, message: 'User not found'})
+            return res.json({success: false, message: 'User Not Found'})
         }
         res.json({success: true, user})
     } catch (error) {
-        console.log(error.message)
         res.json({success: false, message: error.message})
     }
 }
 
-//Apply for a Job
+// Apply For a Job
 export const applyForJob = async (req, res) => {
     const {jobId} = req.body
-    const userId = req.user._id
+
+    const userId = req.auth.userId
 
     try {
         const isAlreadyApplied = await JobApplication.findOne({jobId, userId})
-        if (isAlreadyApplied.length > 0) {
+
+        if (isAlreadyApplied) {
             return res.json({success: false, message: 'Already Applied'})
         }
-
         const jobData = await Job.findById(jobId)
 
         if (!jobData) {
-            return res.json({success: false, message: 'Job not found'})
+            return res.json({success: false, message: 'job not found'})
         }
-
         await JobApplication.create({
-            companyId: jobData.companyId,
             userId,
+            companyId: jobData.companyId,
             jobId,
             date: Date.now()
         })
@@ -45,9 +47,9 @@ export const applyForJob = async (req, res) => {
         res.json({success: true, message: 'Applied Successfully'})
 
     } catch (error) {
-        console.log(error.message)
         res.json({success: false, message: error.message})
     }
+
 }
 
 // Get user applied applications
