@@ -2,6 +2,7 @@ import Company from "../models/Company.js";
 import bcrypt from "bcrypt";
 import {v2 as cloudinary} from "cloudinary";
 import generateToken from "../utils/generateToken.js";
+import company from "../models/Company.js";
 
 // Register a new company
 export const registerCompany = async (req, res) => {
@@ -124,7 +125,28 @@ export const postJob = async (req, res) => {
 
 // Get Company Job applicants
 export const getCompanyJobApplicants = async (req, res) => {
+    try {
+        const companyId = req.company._id;
 
+        // Find all jobs posted by the company
+        const jobs = await Job.find({companyId});
+
+        if (!jobs.length) {
+            return res.status(404).json({success: false, message: "No jobs found"});
+        }
+
+        // Collect all job IDs
+        const jobIds = jobs.map((job) => job._id);
+
+        // Find all applications for these job IDs
+        const applications = await JobApplication.find({jobId: {$in: jobIds}})
+            .populate("userId", "name email resume")  // populate applicant details
+            .populate("jobId", "title");             // populate job title
+
+        res.status(200).json({success: true, applications});
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message});
+    }
 };
 
 // Get Company Posted Jobs
@@ -155,7 +177,34 @@ export const getCompanyPostedJobs = async (req, res) => {
 
 // Change job application status
 export const ChangeJobApplicationStatus = async (req, res) => {
+    const {applicationId, newStatus} = req.body;
 
+    try {
+        // Find the application
+        const application = await JobApplication.findById(applicationId);
+        if (!application) {
+            return res.status(404).json({success: false, message: "Application not found"});
+        }
+
+        // Find the related job to verify ownership
+        const job = await Job.findById(application.jobId);
+        if (!job) {
+            return res.status(404).json({success: false, message: "Job not found"});
+        }
+
+        // Check if current company owns this job
+        if (job.companyId.toString() !== req.company._id.toString()) {
+            return res.status(403).json({success: false, message: "Unauthorized access"});
+        }
+
+        // Update status
+        application.status = newStatus;
+        await application.save();
+
+        res.status(200).json({success: true, application});
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message});
+    }
 };
 
 // Change job visibility
