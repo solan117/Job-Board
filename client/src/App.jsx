@@ -9,6 +9,8 @@ import ViewApplications from "./Pages/ViewApplications.jsx";
 import ManageJobs from "./Pages/ManageJobs.jsx";
 import Dashboard from "./Pages/Dashboard.jsx";
 import AddJob from "./Pages/AddJob.jsx";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
 
@@ -18,6 +20,7 @@ const App = () => {
     return (
         <div>
             {showRecruiterLogin && <RecruiterLogin/>}
+            <ToastContainer/>
             <Routes>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/applications" element={<Application/>}/>
