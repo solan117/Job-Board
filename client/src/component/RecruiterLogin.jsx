@@ -54,22 +54,26 @@ const RecruiterLogin = () => {
             }
         } catch (error) {
             const message = error.response?.data?.message || error.message;
-            toast.error(message);
+            if (!toast.isActive('recruiter-error')) {
+                toast.error(message, {
+                    toastId: 'recruiter-error'
+                });
+            }
         }
-        // else if (state === 'Sign Up' && isTextDataSubmited) {
-        //   // Submit all data
-        //   console.log({
-        //     name,
-        //     email,
-        //     password,
-        //     image,
-        //   });
-        // }
     };
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log("RecruiterLogin mounted"); // Check how many times this logs
+        document.body.style.overflow = 'hidden';
+        return () => {
+            console.log("RecruiterLogin unmounted"); // Check cleanup
             document.body.style.overflow = 'unset';
         };
     }, []);
