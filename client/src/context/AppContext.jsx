@@ -44,6 +44,12 @@ export const AppContextProvider = (props) => {
 
     useEffect(() => {
         fetchJobs()
+
+        const storedCompanyToken = localStorage.getItem('companyToken');
+        if (storedCompanyToken) {
+            setCompanyToken(storedCompanyToken);
+        }
+
     }, []);
 
     const value = {
