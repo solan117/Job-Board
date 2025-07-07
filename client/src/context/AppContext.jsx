@@ -20,8 +20,11 @@ export const AppContextProvider = (props) => {
 
     const [companyToken, setCompanyToken] = useState(null)
 
-    const [companyData, setCompanyData] = useState(null)
-
+    // ✅ Initialize from localStorage
+    const [companyData, setCompanyData] = useState(() => {
+        const stored = localStorage.getItem('companyData');
+        return stored ? JSON.parse(stored) : null;
+    });
 
     const fetchJobs = async () => {
         try {
@@ -30,6 +33,14 @@ export const AppContextProvider = (props) => {
             console.log(e);
         }
     }
+
+    useEffect(() => {
+        if (companyData) {
+            localStorage.setItem('companyData', JSON.stringify(companyData));
+        } else {
+            localStorage.removeItem('companyData');
+        }
+    }, [companyData]);
 
     useEffect(() => {
         fetchJobs()
