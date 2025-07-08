@@ -19,6 +19,7 @@ const ManageJobs = () => {
 
             if (data.success) {
                 setJobs(data.jobsData.reverse()); // Keep newest jobs first
+                console.log(data.jobsData);
             } else {
                 toast.error(data.message);
             }
