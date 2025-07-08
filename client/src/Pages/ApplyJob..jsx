@@ -9,6 +9,7 @@ import Footer from "../component/Footer";
 import {toast} from "react-toastify";
 import kconvert from "k-convert";
 import moment from "moment";
+import axios from "axios";
 
 const Applyjob = () => {
     const {id} = useParams();
@@ -17,13 +18,17 @@ const Applyjob = () => {
 
     const {jobs} = useContext(AppContext);
 
+    const {backendUrl} = useContext(AppContext);
+
+
     const fetchJob = async () => {
         try {
-            const data = jobs.filter(job => job._id === id);
+            const {data} = await axios.get(backendUrl + `/api/jobs/${id}`);
 
-            if (data.length !== 0) {
-                setJobData(data[0]);
-                console.log(data[0]); // Convert the object to a string
+            if (data.success) {
+                setJobData(data.job);
+            } else {
+                toast.error(data.message);
             }
         } catch (error) {
             toast.error(error.message);

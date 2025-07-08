@@ -1,5 +1,7 @@
 import {createContext, useEffect, useState} from "react";
 import {jobsData} from "../assets/assets.js";
+import axios from "axios";
+import {toast} from "react-toastify";
 
 export const AppContext = createContext();
 
@@ -28,12 +30,21 @@ export const AppContextProvider = (props) => {
         return stored ? JSON.parse(stored) : null;
     });
 
+    // Function to fetch jobs
     const fetchJobs = async () => {
         try {
-            setJobs(jobsData)
-        } catch (e) {
-            console.log(e);
+            const {data} = await axios.get(backendUrl + '/api/jobs')
+            if (data.success) {
+                setJobs(data.jobs)
+                console.log(data.jobs)
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error.message)
         }
+
     }
 
     // Sync localStorage when token changes
@@ -63,6 +74,7 @@ export const AppContextProvider = (props) => {
         }
 
     }, []);
+    
 
     const value = {
         setIsSearched, setSearchFilter,
