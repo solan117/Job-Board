@@ -18,7 +18,9 @@ export const AppContextProvider = (props) => {
 
     const [showRecruiterLogin, setShowRecruiterLogin] = useState(false)
 
-    const [companyToken, setCompanyToken] = useState(null)
+    const [companyToken, setCompanyToken] = useState(
+        () => localStorage.getItem('companyToken') || null
+    );
 
     // ✅ Initialize from localStorage
     const [companyData, setCompanyData] = useState(() => {
@@ -33,6 +35,16 @@ export const AppContextProvider = (props) => {
             console.log(e);
         }
     }
+
+    // Sync localStorage when token changes
+    useEffect(() => {
+        if (companyToken) {
+            localStorage.setItem('companyToken', companyToken);
+        } else {
+            localStorage.removeItem('companyToken');
+        }
+    }, [companyToken]);
+
 
     useEffect(() => {
         if (companyData) {

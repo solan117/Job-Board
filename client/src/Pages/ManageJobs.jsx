@@ -13,7 +13,7 @@ const ManageJobs = () => {
     // Function to fetch company Job Application data
     const fetchCompanyJobs = async () => {
         try {
-            const {data} = await axios.get(`${backendUrl}/api/company/list-job`, {
+            const {data} = await axios.get(`${backendUrl}/api/company/job-list`, {
                 headers: {token: companyToken},
             });
 
