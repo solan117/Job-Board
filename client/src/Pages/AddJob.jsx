@@ -25,25 +25,35 @@ const AddJob = () => {
         try {
             const description = quillRef.current?.root.innerHTML || '';
 
-            const {data} = await axios.post(
+            // Store the full response, not just destructured data
+            const response = await axios.post(
                 `${backendUrl}/api/company/post-job`,
                 {title, description, salary, location, category, level},
                 {headers: {token: companyToken}}
             );
 
-            if (data.success) {
-                toast.success(data.message);
+            console.log("Full API response:", response); // Add this line
+
+            if (response.data.success) {
+                toast.success(response.data.message);
                 setTitle('');
                 setSalary(0);
                 if (quillRef.current) quillRef.current.root.innerHTML = '';
             } else {
-                toast.error(data.message);
+                toast.error(response.data.message || "Job submission failed");
             }
         } catch (error) {
-            toast.error(error.message || 'An error occurred!');
+            console.error("API Error:", {
+                response: error.response,
+                message: error.message,
+                stack: error.stack
+            });
+            const errorMessage = error.response?.data?.message ||
+                error.message ||
+                'Failed to post job';
+            toast.error(errorMessage);
         }
     };
-
     useEffect(() => {
         if (!quillRef.current && editorRef.current) {
             const quillInstance = new Quill(editorRef.current, {theme: 'snow'});
