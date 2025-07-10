@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const JobApplicationSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        type: String,
+        ref: "User",  // ✅ This still works because your User _id is also String
         required: true
     },
     companyId: {
