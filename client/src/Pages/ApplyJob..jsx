@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {AppContext} from "../context/AppContext";
 import {assets, jobsData} from "../assets/assets";
 import Loading from "../component/Loading.jsx";
@@ -16,10 +16,9 @@ const Applyjob = () => {
 
     const [JobData, setJobData] = useState(null);
 
-    const {jobs} = useContext(AppContext);
+    const {jobs, backendUrl, userData, userApplications} = useContext(AppContext);
 
-    const {backendUrl} = useContext(AppContext);
-
+    const navigate = useNavigate();
 
     const fetchJob = async () => {
         try {
@@ -35,11 +34,27 @@ const Applyjob = () => {
         }
     };
 
-    useEffect(() => {
-        if (jobs.length > 0) {
-            fetchJob();
+    const applyHandler = async () => {
+        try {
+
+            if (!userData) {
+                return toast.error('Login to apply for jobs')
+            }
+
+            if (!userData.resume) {
+                navigate('/applications')
+                return toast.error('Upload Resume to apply')
+            }
+
+
+        } catch (error) {
+
         }
-    }, [id, jobs]);
+    }
+
+    useEffect(() => {
+        fetchJob();
+    }, [id]);
 
     return JobData ? (
 
@@ -83,7 +98,7 @@ const Applyjob = () => {
                         </div>
                         <div
                             className="flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center">
-                            <button className="bg-blue-600 p-2.5 px-10 text-white rounded">
+                            <button onClick={applyHandler} className="bg-blue-600 p-2.5 px-10 text-white rounded">
                                 Apply Now
                             </button>
                             <p className="mt-1 text-gray-600">
@@ -98,7 +113,7 @@ const Applyjob = () => {
                                 className="rich-text"
                                 dangerouslySetInnerHTML={{__html: JobData.description}}
                             ></div>
-                            <button className="bg-blue-600 p-2.5 px-10 text-white rounded mt-10">
+                            <button onClick={applyHandler} className="bg-blue-600 p-2.5 px-10 text-white rounded mt-10">
                                 Apply Now
                             </button>
                         </div>
