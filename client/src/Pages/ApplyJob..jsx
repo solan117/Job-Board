@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {AppContext} from "../context/AppContext";
-import {assets, jobsData} from "../assets/assets";
+import {assets} from "../assets/assets";
 import Loading from "../component/Loading.jsx";
 import Navbar from "../component/Navbar";
 import JobCard from "../component/JobCard";
@@ -19,7 +19,9 @@ const Applyjob = () => {
 
     const [JobData, setJobData] = useState(null);
 
-    const {jobs, backendUrl, userData, userApplications} = useContext(AppContext);
+    const [isAlreadyApplied, setIsAlreadyApplied] = useState(false)
+
+    const {jobs, backendUrl, userData, userApplications, fetchUserApplications} = useContext(AppContext);
 
     const navigate = useNavigate();
 
@@ -58,6 +60,7 @@ const Applyjob = () => {
 
             if (data.success) {
                 toast.success(data.message)
+                fetchUserApplications()
                 navigate('/applications')
             } else {
                 toast.error(data.message)
@@ -67,6 +70,21 @@ const Applyjob = () => {
             toast.error(error.message);
         }
     }
+
+    const checkAlreadyApplied = () => {
+
+        const hasApplied = userApplications.some(item => item.jobId._id === JobData._id)
+
+        setIsAlreadyApplied(hasApplied)
+
+    }
+
+    useEffect(() => {
+        if (userApplications.length > 0 && JobData) {
+            checkAlreadyApplied()
+        }
+    }, [JobData, userApplications, id]);
+
 
     useEffect(() => {
         fetchJob();
@@ -115,7 +133,7 @@ const Applyjob = () => {
                         <div
                             className="flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center">
                             <button onClick={applyHandler} className="bg-blue-600 p-2.5 px-10 text-white rounded">
-                                Apply Now
+                                {isAlreadyApplied ? 'Applied' : 'Apply Now'}
                             </button>
                             <p className="mt-1 text-gray-600">
                                 Posted {moment(JobData.date).fromNow()}
@@ -130,37 +148,41 @@ const Applyjob = () => {
                                 dangerouslySetInnerHTML={{__html: JobData.description}}
                             ></div>
                             <button onClick={applyHandler} className="bg-blue-600 p-2.5 px-10 text-white rounded mt-10">
-                                Apply Now
+                                {isAlreadyApplied ? 'Applied' : 'Apply Now'}
                             </button>
                         </div>
 
-                        {/* Right Section More jobs */}
+                        {/* Right Section - More Jobs from Same Company */}
                         <div className="w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5">
-                            <h2>
+                            <h2 className="text-xl font-semibold">
                                 More jobs from {JobData?.companyId?.name || "Unknown Company"}
                             </h2>
-                            {Array.isArray(jobs) &&
-                            jobs.filter(
-                                (job) =>
+
+                            {(() => {
+                                // Get all applied job IDs (handle both string and populated object)
+                                const appliedJobIds = userApplications.map(
+                                    app => app.jobId?._id || app.jobId
+                                );
+
+                                // Get related jobs from the same company, excluding current and applied jobs
+                                const relatedJobs = jobs.filter(job =>
                                     job._id !== JobData?._id &&
-                                    job?.companyId?._id === JobData?.companyId?._id
-                            ).length > 0 ? (
-                                jobs
-                                    .filter(
-                                        (job) =>
-                                            job._id !== JobData?._id &&
-                                            job?.companyId?._id === JobData?.companyId?._id
-                                    )
-                                    .slice(0, 4)
-                                    .map((job, index) => (
-                                        <JobCard key={job._id || index} job={job}/>
+                                    job?.companyId?._id === JobData?.companyId?._id &&
+                                    !appliedJobIds.includes(job._id)
+                                );
+
+                                return relatedJobs.length > 0 ? (
+                                    relatedJobs.slice(0, 4).map(job => (
+                                        <JobCard key={job._id} job={job}/>
                                     ))
-                            ) : (
-                                <p class="text-gray-600 text-lg font-semibold text-center mt-4">
-                                    No more jobs from this company.
-                                </p>
-                            )}
+                                ) : (
+                                    <p className="text-gray-600 text-lg font-semibold text-center mt-4">
+                                        No more jobs from this company.
+                                    </p>
+                                );
+                            })()}
                         </div>
+
                     </div>
                 </div>
             </div>

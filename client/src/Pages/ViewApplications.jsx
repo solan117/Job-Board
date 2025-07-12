@@ -1,8 +1,38 @@
-import React from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {assets, viewApplicationsPageData} from '../assets/assets'
+import {AppContext} from "../context/AppContext.jsx";
+import axios from "axios";
+import Loading from "../component/Loading.jsx";
 
 const ViewApplications = () => {
-    return (
+
+
+    const {backendUrl, companyToken} = useContext(AppContext)
+    const [applications, setApplications] = useState(false)
+
+    //Fetch company job application data
+    const fetchCompanyJobApplications = async () => {
+        try {
+            const {data} = await axios.get(`${backendUrl}/api/company/applicants`,
+                {headers: {token: companyToken}})
+            if (data.success) {
+                setApplications(data.applications.reverse())
+            } else {
+                console.log(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        if (companyToken) {
+            fetchCompanyJobApplications()
+        }
+    }, [companyToken]);
+
+
+    return applications ? applications.length === 0 ? (<div className='container mx-auto p-4'></div>) : (
         <div className='container mx-auto p-4'>
             <div>
                 <table className='w-full max-w-4xl bg-white border border-gray-200 max-sm:text-sm'>
@@ -17,22 +47,22 @@ const ViewApplications = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {viewApplicationsPageData.map((applicant, index) => (
+                    {applications.filter(item => item.jobId && item.userId).map((applicant, index) => (
                         <tr key={index} className='text-gray-700'>
                             <td className='py-2 px-4 border-b text-center'>{index + 1}</td>
                             <td className='py-2 px-4 border-b text-center flex items-center gap-3'>
                                 <img
                                     className='w-10 h-10 rounded-full mr-3 max-sm:hidden'
-                                    src={applicant.imgSrc}
+                                    src={applicant.userId.image}
                                     alt={`${applicant.name}'s profile`}
                                 />
-                                <span>{applicant.name}</span>
+                                <span>{applicant.userId.name}</span>
                             </td>
-                            <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.jobTitle}</td>
-                            <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.location}</td>
-                            <td className='py-2 px-4 border-b'>
+                            <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.jobId.title}</td>
+                            <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.jobId.location}</td>
+                            <td className='py-2 px-4 border-b  transform: scale(0.95) '>
                                 <a
-                                    href={applicant.resumeLink}
+                                    href={applicant.userId.resume}
                                     target='_blank'
                                     rel='noopener noreferrer'
                                     className='bg-blue-50 text-blue-400 px-3 py-1 rounded inline-flex gap-2 items-center'
@@ -69,7 +99,7 @@ const ViewApplications = () => {
                 </table>
             </div>
         </div>
-    )
+    ) : <Loading/>
 }
 
 export default ViewApplications
