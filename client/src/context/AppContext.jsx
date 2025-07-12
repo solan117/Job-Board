@@ -106,8 +106,24 @@ export const AppContextProvider = (props) => {
     useEffect(() => {
         if (user) {
             fetchUserData()
+            fetchUserApplications()
         }
     }, [user])
+
+    //Function to fetch user's applied application data
+    const fetchUserApplications = async () => {
+        try {
+            const token = await getToken();
+            const {data} = await axios.get(backendUrl + '/api/users/applications',
+                {headers: {Authorization: `Bearer ${token}`}}
+            )
+            if (data.success) {
+                setUserApplications(data.applications)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
 
     const value = {
         setIsSearched, setSearchFilter,
@@ -122,6 +138,7 @@ export const AppContextProvider = (props) => {
         userApplications,
         setUserApplications,
         fetchUserData,
+        fetchUserApplications
     }
 
     return (

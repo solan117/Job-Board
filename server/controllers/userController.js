@@ -59,7 +59,7 @@ export const getUserJobApplications = async (req, res) => {
 
         const applications = await JobApplication.find({userId})
             .populate('companyId', 'name email image')
-            .populate('jobId', 'title', 'desctription', 'location', 'category', 'level', 'salary')
+            .populate('jobId', 'title description location category level salary')
             .exec()
 
         if (!applications) {
@@ -70,6 +70,7 @@ export const getUserJobApplications = async (req, res) => {
         res.json({success: false, message: error.message})
     }
 }
+
 
 // Update user profile (resume)
 export const updateUserResume = async (req, res) => {
