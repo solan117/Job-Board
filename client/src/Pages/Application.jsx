@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import Navbar from '../component/Navbar'
 import {use} from 'react'
 import {assets, jobsApplied} from '../assets/assets'
@@ -44,6 +44,7 @@ const Applications = () => {
         setResume(null)
     }
 
+
     return (
         <>
             <Navbar/>
@@ -67,7 +68,8 @@ const Applications = () => {
                             </>
                             :
                             <div className='flex gap-2'>
-                                <a className='bg-blue-100 text-blue-600 px-4 py-2 rounded-lg' href="">
+                                <a target="_blank" href={userData.resume}
+                                   className='bg-blue-100 text-blue-600 px-4 py-2 rounded-lg'>
                                     Resume
                                 </a>
                                 <button onClick={() => setIsedit(true)}
