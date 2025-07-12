@@ -3,11 +3,12 @@ import moment from "moment";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify"; // Ensure `react-toastify` is installed
 import axios from "axios";
-import {AppContext} from "../context/AppContext"; // Assuming proper context is setup
+import {AppContext} from "../context/AppContext";
+import Loading from "../component/Loading.jsx"; // Assuming proper context is setup
 
 const ManageJobs = () => {
     const navigate = useNavigate();
-    const [jobs, setJobs] = useState([]);
+    const [jobs, setJobs] = useState(false);
     const {backendUrl, companyToken} = useContext(AppContext);
 
     // Function to fetch company Job Application data
@@ -58,6 +59,30 @@ const ManageJobs = () => {
         }
     }, [companyToken]);
 
+    if (!jobs) {
+        // Data is still loading
+        return <Loading/>;
+    }
+
+    if (jobs.length === 0) {
+        // Data loaded, but no jobs
+        return (
+            <div className="container p-8 max-w-5xl flex flex-col items-center justify-center text-center">
+                <h2 className="text-3xl font-bold text-gray-700 mb-2">No Jobs Found</h2>
+                <p className="text-lg text-gray-500 mb-6">
+                    You haven’t posted any jobs yet. Click below to add your first one!
+                </p>
+                <button
+                    onClick={() => navigate("/dashboard/add-job")}
+                    className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition"
+                >
+                    Add New Job
+                </button>
+            </div>
+
+        );
+    }
+
     return (
         <div className="container p-4 max-w-5xl">
             <div className="overflow-x-auto">
@@ -66,50 +91,32 @@ const ManageJobs = () => {
                     <tr>
                         <th className="py-2 px-4 border-b text-left max-sm:hidden">#</th>
                         <th className="py-2 px-4 border-b text-left">Job Title</th>
-                        <th className="py-2 px-4 border-b text-left max-sm:hidden">
-                            Date
-                        </th>
-                        <th className="py-2 px-4 border-b text-left max-sm:hidden">
-                            Location
-                        </th>
+                        <th className="py-2 px-4 border-b text-left max-sm:hidden">Date</th>
+                        <th className="py-2 px-4 border-b text-left max-sm:hidden">Location</th>
                         <th className="py-2 px-4 border-b text-center">Applicants</th>
                         <th className="py-2 px-4 border-b text-left">Visible</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {jobs.length > 0 ? (
-                        jobs.map((job, index) => (
-                            <tr key={index} className="text-gray-700">
-                                <td className="py-2 px-4 border-b max-sm:hidden">
-                                    {index + 1}
-                                </td>
-                                <td className="py-2 px-4 border-b">{job.title}</td>
-                                <td className="py-2 px-4 border-b max-sm:hidden">
-                                    {moment(job.date).format("LL")}
-                                </td>
-                                <td className="py-2 px-4 border-b max-sm:hidden">
-                                    {job.location}
-                                </td>
-                                <td className="py-2 px-4 border-b text-center">
-                                    {job.applicants}
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                    <input
-                                        className="scale-125 ml-4"
-                                        type="checkbox"
-                                        checked={job.visible}
-                                        onChange={() => changeJobVisiblity(job._id)}
-                                    />
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={6} className="py-4 px-4 text-center text-gray-500">
-                                No jobs found.
+                    {jobs.map((job, index) => (
+                        <tr key={index} className="text-gray-700">
+                            <td className="py-2 px-4 border-b max-sm:hidden">{index + 1}</td>
+                            <td className="py-2 px-4 border-b">{job.title}</td>
+                            <td className="py-2 px-4 border-b max-sm:hidden">
+                                {moment(job.date).format("LL")}
+                            </td>
+                            <td className="py-2 px-4 border-b max-sm:hidden">{job.location}</td>
+                            <td className="py-2 px-4 border-b text-center">{job.applicants}</td>
+                            <td className="py-2 px-4 border-b">
+                                <input
+                                    className="scale-125 ml-4"
+                                    type="checkbox"
+                                    checked={job.visible}
+                                    onChange={() => changeJobVisiblity(job._id)}
+                                />
                             </td>
                         </tr>
-                    )}
+                    ))}
                     </tbody>
                 </table>
             </div>
