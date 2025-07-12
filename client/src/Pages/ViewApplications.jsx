@@ -3,6 +3,7 @@ import {assets, viewApplicationsPageData} from '../assets/assets'
 import {AppContext} from "../context/AppContext.jsx";
 import axios from "axios";
 import Loading from "../component/Loading.jsx";
+import {toast} from "react-toastify";
 
 const ViewApplications = () => {
 
@@ -22,6 +23,24 @@ const ViewApplications = () => {
             }
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    //Update Job Application Status
+    const changeApplicationStatus = async (id, status) => {
+        try {
+            const {data} = await axios.post(`${backendUrl}/api/company/change-status`,
+                {id, status},
+                {headers: {token: companyToken}})
+
+            if (data.success) {
+                fetchCompanyJobApplications()
+            } else {
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            toast.error(error)
         }
     }
 
@@ -76,22 +95,40 @@ const ViewApplications = () => {
                                 </a>
                             </td>
                             <td className='py-2 px-4 border-b relative'>
-                                <div className='relative inline-block text-left group'>
-                                    <button className='text-gray-500 focus:outline-none'>
-                                        ...
-                                    </button>
-                                    <div
-                                        className='z-10 hidden absolute right-0 md:left-0 top-8 w-32 bg-white border border-gray-200 rounded shadow group-hover:block'>
-                                        <button
-                                            className='block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100'>
-                                            Accept
-                                        </button>
-                                        <button
-                                            className='block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100'>
-                                            Reject
-                                        </button>
-                                    </div>
-                                </div>
+                                {
+                                    applicant.status === 'Pending' ?
+                                        <div className='relative inline-block text-left group'>
+                                            <button className='text-gray-500 focus:outline-none'>
+                                                ...
+                                            </button>
+                                            <div
+                                                className='z-10 hidden absolute right-0 md:left-0 top-8 w-32 bg-white border border-gray-200 rounded shadow group-focus-within:block'>
+                                                <button
+                                                    onClick={() => changeApplicationStatus(applicant._id, 'Accepted')}
+                                                    className='block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100'>
+                                                    Accept
+                                                </button>
+                                                <button
+                                                    onClick={() => changeApplicationStatus(applicant._id, 'Rejected')}
+                                                    className='block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100'>
+                                                    Reject
+                                                </button>
+                                            </div>
+                                        </div> :
+                                        <span
+                                            className={
+                                                applicant.status === 'Accepted'
+                                                    ? 'text-green-500'
+                                                    : applicant.status === 'Rejected'
+                                                        ? 'text-red-500'
+                                                        : 'text-gray-500'
+                                            }
+                                        >
+                                            {applicant.status}
+                                        </span>
+                                }
+
+
                             </td>
                         </tr>
                     ))}
