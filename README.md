@@ -75,7 +75,7 @@ and track application status.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/job-portal.git
+git clone https://github.com/solan117/job-portal.git
 cd job-portal
 ```
 
@@ -148,6 +148,10 @@ Basic unit tests are written using Jest and React Testing Library (e.g., `JobLis
 cd client
 npm test
 ```
+
+### Live Demo
+
+https://job-board-client-amber.vercel.app/
 
 ## 📜 Changelog Summary
 

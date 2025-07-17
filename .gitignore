@@ -33,6 +33,8 @@ logs/
 
 commit-history2.txt
 commit-history1.txt
+commit_history.csv
+commit_history.txt
 
 # Windows
 Thumbs.db
