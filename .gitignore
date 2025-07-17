@@ -31,7 +31,7 @@ build/
 *.log
 logs/
 
-commit-history.txt
+commit-history2.txt
 commit-history1.txt
 
 # Windows
